@@ -6,6 +6,8 @@ Repository contents:
 - `ULocalRuntimeSTT` for microphone capture and offline speech recognition through Vosk
 - `ULocalRuntimeLLM` for local LLM requests through `llama-server`
 - `ULocalRuntimeTTS` for local speech synthesis through Piper
+- HTTP runtime clients for separate LLM, TTS, and STT services
+- Python HTTP server scripts for separate LLM, TTS, and STT processes
 - minimal module files required to compile these classes inside an Unreal module
 
 Legacy component-based `LocalLLMComponent` and `LocalTTSComponent` are intentionally excluded. The current API is UObject-based.
@@ -16,6 +18,15 @@ Main runtime classes:
 - `Source/LipsyncTest/LocalRuntimeSTT.*`
 - `Source/LipsyncTest/LocalRuntimeLLM.*`
 - `Source/LipsyncTest/LocalRuntimeTTS.*`
+- `Source/LipsyncTest/HttpRuntimeLLMClient.*`
+- `Source/LipsyncTest/HttpRuntimeTTSClient.*`
+- `Source/LipsyncTest/HttpRuntimeSTTClient.*`
+- `Source/LipsyncTest/HttpRuntimeSTTStreamClient.*`
+
+Python server scripts:
+- `Source/LipsyncTest/llm_http_server.py`
+- `Source/LipsyncTest/tts_http_server.py`
+- `Source/LipsyncTest/stt_http_server.py`
 
 Module files:
 - `Source/LipsyncTest/LipsyncTest.Build.cs`
@@ -48,6 +59,11 @@ TTS:
 STT:
 - `Vosk/vosk.dll`
 - `Models/vosk/vosk-model-ru-0.42`
+
+If you use the separate Python servers from this repo, they listen by default on:
+- LLM proxy: `127.0.0.1:8081`
+- TTS proxy: `127.0.0.1:8082`
+- STT proxy: `127.0.0.1:8083`
 
 All paths can be overridden in Blueprint or C++.
 
@@ -146,6 +162,20 @@ Main events:
 - `OnSpeechResult`
 - `OnError`
 
+### HTTP runtime clients
+
+Included UObject clients:
+- `UHttpRuntimeLLMClient`
+- `UHttpRuntimeTTSClient`
+- `UHttpRuntimeSTTClient`
+- `UHttpRuntimeSTTStreamClient`
+
+Intended usage:
+- use `UHttpRuntimeLLMClient` with `llm_http_server.py`
+- use `UHttpRuntimeTTSClient` with `tts_http_server.py`
+- use `UHttpRuntimeSTTStreamClient` with `stt_http_server.py` for live microphone streaming and wake word flow
+- use `UHttpRuntimeSTTClient` with `stt_http_server.py` for one-shot audio transcription
+
 ## Basic usage
 
 ### Blueprint flow
@@ -202,13 +232,24 @@ void AMyActor::HandleLLMResponse(const FString& Prompt, const FString& Response)
 
 ```text
 Source/LipsyncTest/
+  HttpRuntimeLLMClient.cpp
+  HttpRuntimeLLMClient.h
+  HttpRuntimeSTTClient.cpp
+  HttpRuntimeSTTClient.h
+  HttpRuntimeSTTStreamClient.cpp
+  HttpRuntimeSTTStreamClient.h
+  HttpRuntimeTTSClient.cpp
+  HttpRuntimeTTSClient.h
   LipsyncTest.Build.cs
   LipsyncTest.cpp
   LipsyncTest.h
+  llm_http_server.py
   LocalRuntimeLLM.cpp
   LocalRuntimeLLM.h
   LocalRuntimeSTT.cpp
   LocalRuntimeSTT.h
   LocalRuntimeTTS.cpp
   LocalRuntimeTTS.h
+  stt_http_server.py
+  tts_http_server.py
 ```
