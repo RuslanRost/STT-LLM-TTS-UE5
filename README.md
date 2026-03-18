@@ -6,6 +6,8 @@ Contents:
 - `Source/LipsyncTest/LocalRuntimeSTT.*`
 - `Source/LipsyncTest/LocalRuntimeLLM.*`
 - `Source/LipsyncTest/LocalRuntimeTTS.*`
-- supporting module files in `Source/LipsyncTest`
+- module bootstrap files in `Source/LipsyncTest`
 
-This repository intentionally contains only the code from `Source/LipsyncTest`.
+Legacy component-based `LocalLLMComponent` and `LocalTTSComponent` files are intentionally excluded.
+
+This repository intentionally contains only the runtime code from `Source/LipsyncTest`.
